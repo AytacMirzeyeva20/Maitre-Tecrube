@@ -1,5 +1,5 @@
 import { IoMdSearch } from "react-icons/io";
-import {getProducts, getCategories, type Product, type Category,} from "../api/api";
+import {getProducts, getCategories, type Product, type Category, updateProduct,} from "../api/api";
 import { useEffect, useState } from "react";
 import AddProduct from "../components/AddProduct";
 import EditingProduct from "../components/EditingProduct";
@@ -22,6 +22,13 @@ function Products(){
   });
     },[search,categoryId]);
    const [showAddProduct, setShowAddProduct] = useState(false);
+   const handleToggle = async (id: number, isAvailable: boolean) => {
+  await updateProduct(id, {
+    isAvailable: !isAvailable,
+  });
+
+  refreshProducts();
+};
     return(
         <>
         <div className="p-6">
@@ -81,12 +88,12 @@ function Products(){
 </td>
 <td className="px-6 py-4 text-right whitespace-nowrap">
 <span className="text-sm font-medium text-[#292011]">
-{product.price.toFixed(2).replace(".", ",")} ₼
+{product.price.toFixed(2)} ₼
 </span>
 </td>
  <td className="px-6 py-4">
 <div className="flex items-center gap-3 whitespace-nowrap">
-<button type="button" aria-label={`${product.nameAz} satiş statusu`}
+<button onClick={() => handleToggle(product.id, product.isAvailable)} type="button" aria-label={`${product.nameAz} satiş statusu`}
 className={`w-10 h-5.5 rounded-full p-0.75 flex items-center transition-colors ${
 product.isAvailable ? "bg-[#203D2E] justify-end" : "bg-[#D6D0C6] justify-start"}`}>
  <span className="w-4 h-4 rounded-full bg-white shadow-sm" />
