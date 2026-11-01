@@ -2,11 +2,13 @@ import { IoMdSearch } from "react-icons/io";
 import {getProducts, getCategories, type Product, type Category,} from "../api/api";
 import { useEffect, useState } from "react";
 import AddProduct from "../components/AddProduct";
+import EditingProduct from "../components/EditingProduct";
 function Products(){
     const[products,setProducts]=useState<Product[]>([]);
     const[search,setSearch]=useState("")
       const[categories,setCategories]=useState<Category[]>([]);
      const [categoryId, setCategoryId] = useState("");
+     const[editingProduct,setEditingProduct]=useState<Product | null>(null);
      const refreshProducts = async () => {
   const data = await getProducts({search,categoryId: categoryId ? Number(categoryId) : undefined,pageSize:100});
   setProducts(data.items);
@@ -96,7 +98,11 @@ product.isAvailable ? "bg-[#203D2E] justify-end" : "bg-[#D6D0C6] justify-start"}
   </div>
   </td>
  <td className="px-6 py-4 text-right">
-   <button  type="button" className="rounded-full border border-[#E5E2DE] bg-white px-4 py-2 text-sm font-medium text-[#292011] hover:bg-[#F7F3ED] hover:border-[#C7BBAA] transition whitespace-nowrap">
+  {editingProduct && (
+  <EditingProduct product={editingProduct}  onClose={() => setEditingProduct(null)}
+    onProductUpdated={refreshProducts} />
+)}
+   <button onClick={() => setEditingProduct(product)} type="button" className="rounded-full border border-[#E5E2DE] bg-white px-4 py-2 text-sm font-medium text-[#292011] hover:bg-[#F7F3ED] hover:border-[#C7BBAA] transition whitespace-nowrap">
        Düzəlt
     </button>
   </td>
