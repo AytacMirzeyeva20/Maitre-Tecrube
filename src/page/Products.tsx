@@ -1,14 +1,25 @@
 import { IoMdSearch } from "react-icons/io";
-import { getProducts, type Product } from "../api/api";
+import {getProducts, getCategories, type Product, type Category,} from "../api/api";
 import { useEffect, useState } from "react";
+import AddProduct from "../components/AddProduct";
 function Products(){
     const[products,setProducts]=useState<Product[]>([]);
     const[search,setSearch]=useState("")
+      const[categories,setCategories]=useState<Category[]>([]);
+     const [categoryId, setCategoryId] = useState("");
+     const refreshProducts = async () => {
+  const data = await getProducts({search,categoryId: categoryId ? Number(categoryId) : undefined,pageSize:100});
+  setProducts(data.items);
+};
     useEffect(()=>{
-        getProducts({search}).then((data)=>{
+        getProducts({search, categoryId:categoryId ? Number(categoryId) :undefined,}).then((data)=>{
             setProducts(data.items);
         })
-    },[search])
+        getCategories().then((data) => {
+    setCategories(data);
+  });
+    },[search,categoryId]);
+   const [showAddProduct, setShowAddProduct] = useState(false);
     return(
         <>
         <div className="p-6">
@@ -20,11 +31,20 @@ function Products(){
     <IoMdSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-xl" />
 <input  type="search" value={search} onChange={(e)=>setSearch(e.target.value)} placeholder="Ada görə axtar..." className="border border-gray-300  bg-white rounded-full py-2 pl-20 pr-4 outline-none focus:border-[#A37B3E]"/>
 </div>
-        <select className="border border-gray-200 bg-white rounded-full py-2 px-5" >
-            <option value="">Butun Kateqoriyalar</option>
-        </select>
+<select value={categoryId} onChange={(e)=>setCategoryId(e.target.value)} className="border border-gray-200 bg-white rounded-full py-2 px-5">
+<option value="">Bütün kateqoriyalar</option>
+{categories.map((category) => (
+  <option key={category.id} value={category.id}>
+    {category.name}
+  </option>
+))}
+</select>
         </div>
-     <button className="bg-[#A37B3E] text-white py-2 px-5 rounded-lg hover:bg-[#89652F] transition">  + Yeni məhsul</button>
+     <button onClick={() => setShowAddProduct(true)}  className="bg-[#A37B3E] text-white py-2 px-5 rounded-lg hover:bg-[#89652F] transition">
+  + Yeni məhsul
+  </button>
+  {showAddProduct && <AddProduct onClose={() => setShowAddProduct(false)}
+    onProductAdded={refreshProducts}/>}
       </div>
       </div>
 <div className="mx-6 mt-6 mb-5 overflow-x-auto rounded-2xl border border-[#E5E2DE] bg-white">
@@ -47,12 +67,14 @@ function Products(){
  {product.nameAz}
  </p>
 <p className="text-xs text-[#8B8177] mt-1">
-{product.nameEn ?? "—"}
+{product.nameEn}
 </p>
 </td>
 <td className="px-6 py-4">
 <span className="inline-flex rounded-full bg-[#F1EAE0] px-3 py-1.5 text-xs font-medium text-[#4A3828]">
-{product.categoryId}
+{categories.find(
+  (category) => category.id === product.categoryId
+)?.name}
 </span>
 </td>
 <td className="px-6 py-4 text-right whitespace-nowrap">
