@@ -232,3 +232,12 @@ export function updateProduct(id: number, changes: Partial<ProductInput>): Promi
     return updated;
   });
 }
+export function deleteProducting(id:number):Promise<void>{
+  return request(() => {
+    const existing = products.find((p) => p.id === id);
+    if (!existing) {
+      throw new ApiError(404, "Məhsul tapılmadı.");
+    }
+    products = products.filter((p) => p.id !== id);
+  });
+}

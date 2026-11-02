@@ -1,8 +1,10 @@
 import { IoMdSearch } from "react-icons/io";
-import {getProducts, getCategories, type Product, type Category, updateProduct,} from "../api/api";
+import {getProducts, getCategories, type Product, type Category, updateProduct, deleteProducting,} from "../api/api";
 import { useEffect, useState } from "react";
 import AddProduct from "../components/AddProduct";
 import EditingProduct from "../components/EditingProduct";
+import { RiDeleteBin6Line } from "react-icons/ri";
+import DeleteProduct from "../components/DeleteProduct";
 function Products(){
     const[products,setProducts]=useState<Product[]>([]);
     const[search,setSearch]=useState("")
@@ -29,6 +31,13 @@ function Products(){
 
   refreshProducts();
 };
+const [deletingProduct, setDeletingProduct] = useState<Product | null>(null);
+const handleDelete=async()=>{
+  if (!deletingProduct) return;
+  await deleteProducting(deletingProduct.id);
+  setDeletingProduct(null);
+  refreshProducts();
+}
     return(
         <>
         <div className="p-6">
@@ -112,6 +121,13 @@ product.isAvailable ? "bg-[#203D2E] justify-end" : "bg-[#D6D0C6] justify-start"}
    <button onClick={() => setEditingProduct(product)} type="button" className="rounded-full border border-[#E5E2DE] bg-white px-4 py-2 text-sm font-medium text-[#292011] hover:bg-[#F7F3ED] hover:border-[#C7BBAA] transition whitespace-nowrap">
        Düzəlt
     </button>
+    <button onClick={() => setDeletingProduct(product)} type="button" className="ml-2 inline-flex h-10 w-10 items-center justify-center rounded-full border border-[#E8D5D2] bg-white text-[red] transition hover:border-[#B45B52] hover:bg-[#FDF1EF] hover:text-[#963F37]">
+      <RiDeleteBin6Line size={17} />
+    </button>
+    {deletingProduct &&(
+      <DeleteProduct product={deletingProduct} onClose={()=> setDeletingProduct(null)}
+      onConfirm={handleDelete} />
+    )}
   </td>
     </tr>
             ))}
