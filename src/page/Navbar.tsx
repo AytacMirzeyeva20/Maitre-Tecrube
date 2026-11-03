@@ -7,8 +7,8 @@ function Navbar(){
             <span className="text-xl font-semibold">maitre</span>
                 <button className="border-[#292011] bg-[#292011] text-white font-bold rounded-2xl px-4 py-2">Admin</button>
             </div>
-            <div className="flex items-center gap-3">
-        <p>Mirzeyeva Aytac</p>
+            <div className="flex items-center gap-2">
+        <p className="text-sm font-medium ml-3 hidden sm:block">Mirzeyeva Aytac</p>
         <button className="bg-amber-100 text-[#A37B3E] rounded-full w-10 h-10">
             MA
         </button>

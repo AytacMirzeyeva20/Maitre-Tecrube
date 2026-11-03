@@ -1,32 +1,38 @@
-# React + TypeScript + Vite
+Maitre-Product Management Dashboard
+A product management dashboard built with React, TypeScript, and Tailwind CSS as part of a Frontend Internship Task.
 
-This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
+Features
+View and manage products
+Search products by name
+Filter products by category
+Add new products
+Edit existing products
+Delete products with confirmation
+Toggle product availability
+Loading and error states with retry functionality
+Responsive design for different screen sizes
 
-Currently, two official plugins are available:
+Technologies Used
+React
+TypeScript
+Vite
+Tailwind CSS
+React Icons website
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+Getting Started
+Install npm create vite@latest ./
+Tailwindcss npm install tailwindcss @tailwindcss/vite
+React icons  npm i react-icons
 
-## React Compiler
+Project Structure
+src/components — Reusable UI components
+src/page — Main application pages
+src/api — Provided API functions
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+Development Notes
+The project uses the provided mock API for product operations. The API simulates asynchronous requests and occasional errors.
 
-## Expanding the Oxlint configuration
-
-If you are developing a production application, we recommend enabling type-aware lint rules by installing `oxlint-tsgolint` and editing `.oxlintrc.json`:
-
-```json
-{
-  "$schema": "./node_modules/oxlint/configuration_schema.json",
-  "plugins": ["react", "typescript", "oxc"],
-  "options": {
-    "typeAware": true
-  },
-  "rules": {
-    "react/rules-of-hooks": "error",
-    "react/only-export-components": ["warn", { "allowConstantExport": true }]
-  }
-}
-```
-
-See the [Oxlint rules documentation](https://oxc.rs/docs/guide/usage/linter/rules) for the full list of rules and categories.
+Future Improvements
+Implement pagination
+Improve API error handling
+Add more comprehensive form validation

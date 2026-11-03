@@ -15,15 +15,34 @@ function Products(){
   const data = await getProducts({search,categoryId: categoryId ? Number(categoryId) : undefined,pageSize:100});
   setProducts(data.items);
 };
-    useEffect(()=>{
-        getProducts({search, categoryId:categoryId ? Number(categoryId) :undefined,}).then((data)=>{
-            setProducts(data.items);
-        })
-        getCategories().then((data) => {
+const [loading,setLoading]=useState(true);
+const [error,setError]=useState(false);
+    
+const fetchProducts = async () => {
+    setLoading(true);
+    setError(false);
+
+    try {
+      const data = await getProducts({
+        search,
+        categoryId: categoryId ? Number(categoryId) : undefined,
+      });
+
+      setProducts(data.items);
+    } catch {
+      setError(true);
+    } finally {
+      setLoading(false);
+    }
+  };
+useEffect(()=>{
+  fetchProducts();
+
+  getCategories().then((data) => {
     setCategories(data);
   });
-    },[search,categoryId]);
-   const [showAddProduct, setShowAddProduct] = useState(false);
+}, [search, categoryId]);
+const [showAddProduct, setShowAddProduct] = useState(false);
    const handleToggle = async (id: number, isAvailable: boolean) => {
   await updateProduct(id, {
     isAvailable: !isAvailable,
@@ -43,11 +62,11 @@ const handleDelete=async()=>{
         <div className="p-6">
       <h2 className="text-2xl font-bold text-[#292011] ">Mehsullar</h2>
       <p className="text-sm text-gray-500 mt-1">Menyudaki butun mehsullar · 48 məhsul</p>
-      <div className="flex items-center justify-between gap-4 mt-6">
-        <div className="flex items-center gap-3">
+      <div className="flex flex-col sm:flex-row  sm:items-center sm:justify-between gap-4 mt-6">
+        <div className="flex w-full items-center gap-2 sm:gap-3 sm:w-auto">
          <div className="relative">
     <IoMdSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-xl" />
-<input  type="search" value={search} onChange={(e)=>setSearch(e.target.value)} placeholder="Ada görə axtar..." className="border border-gray-300  bg-white rounded-full py-2 pl-20 pr-4 outline-none focus:border-[#A37B3E]"/>
+<input  type="search" value={search} onChange={(e)=>setSearch(e.target.value)} placeholder="Ada görə axtar..." className="w-full min-w-0 border border-gray-300 bg-white rounded-full py-2 pl-10 pr-3 outline-none focus:border-[#A37B3E] sm:w-64"/>
 </div>
 <select value={categoryId} onChange={(e)=>setCategoryId(e.target.value)} className="border border-gray-200 bg-white rounded-full py-2 px-5">
 <option value="">Bütün kateqoriyalar</option>
@@ -65,11 +84,20 @@ const handleDelete=async()=>{
     onProductAdded={refreshProducts}/>}
       </div>
       </div>
-<div className="mx-6 mt-6 mb-5 overflow-x-auto rounded-2xl border border-[#E5E2DE] bg-white">
-    <table className="w-full min-w-212.5 text-left border-collapse">
-
-        <thead className="bg-[#FBF9F5] border-b border-[#EAE7E2]">
-            <tr className="text-xs font-semibold tracking-wide text-[#82796F]">
+      {loading ? (
+        <p>Yuklenir...</p>
+      ) : error ? (
+        <>
+        <p>Xeta bas verdi.</p>
+        <button onClick={fetchProducts} className="bg-[#A37B3E] text-white py-2 px-5 rounded-lg hover:bg-[#89652F] transition">
+          Yeniden Cehd et
+        </button>
+        </>
+      ) : (
+        <div className="mx-6 mt-6 mb-5 overflow-x-auto rounded-2xl border border-[#E5E2DE] bg-white">
+          <table className="w-full min-w-212.5 text-left border-collapse">
+            <thead className="bg-[#FBF9F5] border-b border-[#EAE7E2]">
+              <tr className="text-xs font-semibold tracking-wide text-[#82796F]">
                 <th className="px-6 py-4">AD</th>
                 <th className="px-6 py-4">KATEQORİYA</th>
                 <th className="px-6 py-4 text-right">QİYMƏT</th>
@@ -133,7 +161,10 @@ product.isAvailable ? "bg-[#203D2E] justify-end" : "bg-[#D6D0C6] justify-start"}
             ))}
         </tbody>
     </table>
+  
+
 </div>
+      )}
         </>
     )
 }
